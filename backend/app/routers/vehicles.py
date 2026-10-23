@@ -9,6 +9,14 @@ from app.schemas import VehicleCreate, VehicleUpdate, VehicleResponse, RestockRe
 router = APIRouter(prefix="/api/vehicles", tags=["vehicles"])
 
 
+def get_vehicle_or_404(db: Session, vehicle_id: int) -> Vehicle:
+    """Look up a vehicle by ID or raise 404."""
+    vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
+    if vehicle is None:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    return vehicle
+
+
 @router.get("", response_model=list[VehicleResponse])
 def list_vehicles(
     search: str | None = Query(default=None),
@@ -49,9 +57,7 @@ def purchase_vehicle(
     db: Session = Depends(get_db),
 ):
     """Purchase a vehicle, decreasing its quantity by 1."""
-    vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
-    if vehicle is None:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+    vehicle = get_vehicle_or_404(db, vehicle_id)
 
     if vehicle.quantity <= 0:
         raise HTTPException(status_code=400, detail="Vehicle out of stock")
@@ -69,9 +75,7 @@ def update_vehicle(
     admin: User = Depends(require_admin),
 ):
     """Update an existing vehicle (admin only)."""
-    db_vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
-    if db_vehicle is None:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+    db_vehicle = get_vehicle_or_404(db, vehicle_id)
 
     for field, value in vehicle.model_dump().items():
         setattr(db_vehicle, field, value)
@@ -86,9 +90,7 @@ def delete_vehicle(
     admin: User = Depends(require_admin),
 ):
     """Delete a vehicle (admin only)."""
-    db_vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
-    if db_vehicle is None:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+    db_vehicle = get_vehicle_or_404(db, vehicle_id)
 
     db.delete(db_vehicle)
     db.commit()
@@ -103,9 +105,7 @@ def restock_vehicle(
     admin: User = Depends(require_admin),
 ):
     """Restock a vehicle, adding to its quantity (admin only)."""
-    db_vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
-    if db_vehicle is None:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+    db_vehicle = get_vehicle_or_404(db, vehicle_id)
 
     db_vehicle.quantity += restock.quantity
     db.commit()
