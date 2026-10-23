@@ -24,13 +24,7 @@ def create_vehicle(
     admin: User = Depends(require_admin),
 ):
     """Create a new vehicle (admin only)."""
-    db_vehicle = Vehicle(
-        make=vehicle.make,
-        model=vehicle.model,
-        category=vehicle.category,
-        price=vehicle.price,
-        quantity=vehicle.quantity,
-    )
+    db_vehicle = Vehicle(**vehicle.model_dump())
     db.add(db_vehicle)
     db.commit()
     db.refresh(db_vehicle)
