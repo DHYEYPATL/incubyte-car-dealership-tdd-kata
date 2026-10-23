@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db, get_current_user, require_admin
@@ -10,11 +11,21 @@ router = APIRouter(prefix="/api/vehicles", tags=["vehicles"])
 
 @router.get("", response_model=list[VehicleResponse])
 def list_vehicles(
+    search: str | None = Query(default=None),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Return all vehicles."""
-    return db.query(Vehicle).all()
+    """Return all vehicles, optionally filtered by search term."""
+    query = db.query(Vehicle)
+    if search:
+        pattern = f"%{search}%"
+        query = query.filter(
+            or_(
+                Vehicle.make.ilike(pattern),
+                Vehicle.model.ilike(pattern),
+            )
+        )
+    return query.all()
 
 
 @router.post("", response_model=VehicleResponse, status_code=201)
