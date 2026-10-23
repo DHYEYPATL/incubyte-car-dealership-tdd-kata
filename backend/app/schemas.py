@@ -33,6 +33,18 @@ class VehicleCreate(BaseModel):
     quantity: int = 0
 
 
+class VehicleUpdate(BaseModel):
+    make: str
+    model: str
+    category: str
+    price: float
+    quantity: int
+
+
+class RestockRequest(BaseModel):
+    quantity: int
+
+
 class VehicleResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

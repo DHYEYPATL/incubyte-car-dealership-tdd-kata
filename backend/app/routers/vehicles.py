@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.dependencies import get_db, get_current_user, require_admin
 from app.models import User, Vehicle
-from app.schemas import VehicleCreate, VehicleResponse
+from app.schemas import VehicleCreate, VehicleUpdate, VehicleResponse, RestockRequest
 
 router = APIRouter(prefix="/api/vehicles", tags=["vehicles"])
 
@@ -59,3 +59,54 @@ def purchase_vehicle(
     vehicle.quantity -= 1
     db.commit()
     return vehicle
+
+
+@router.put("/{vehicle_id}", response_model=VehicleResponse)
+def update_vehicle(
+    vehicle_id: int,
+    vehicle: VehicleUpdate,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Update an existing vehicle (admin only)."""
+    db_vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
+    if db_vehicle is None:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    for field, value in vehicle.model_dump().items():
+        setattr(db_vehicle, field, value)
+    db.commit()
+    return db_vehicle
+
+
+@router.delete("/{vehicle_id}", response_model=VehicleResponse)
+def delete_vehicle(
+    vehicle_id: int,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Delete a vehicle (admin only)."""
+    db_vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
+    if db_vehicle is None:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    db.delete(db_vehicle)
+    db.commit()
+    return db_vehicle
+
+
+@router.post("/{vehicle_id}/restock", response_model=VehicleResponse)
+def restock_vehicle(
+    vehicle_id: int,
+    restock: RestockRequest,
+    db: Session = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Restock a vehicle, adding to its quantity (admin only)."""
+    db_vehicle = db.query(Vehicle).filter(Vehicle.id == vehicle_id).first()
+    if db_vehicle is None:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    db_vehicle.quantity += restock.quantity
+    db.commit()
+    return db_vehicle
