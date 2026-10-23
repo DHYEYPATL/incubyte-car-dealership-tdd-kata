@@ -47,5 +47,4 @@ def purchase_vehicle(
 
     vehicle.quantity -= 1
     db.commit()
-    db.refresh(vehicle)
     return vehicle
