@@ -23,3 +23,22 @@ class LoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+
+class VehicleCreate(BaseModel):
+    make: str
+    model: str
+    category: str
+    price: float
+    quantity: int = 0
+
+
+class VehicleResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    make: str
+    model: str
+    category: str
+    price: float
+    quantity: int
