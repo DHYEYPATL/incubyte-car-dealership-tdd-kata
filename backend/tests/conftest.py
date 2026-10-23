@@ -40,3 +40,29 @@ def client(db_session):
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
     app.dependency_overrides.clear()
+
+
+def register_and_login(client, username, password, role):
+    """Register a user and return their auth headers."""
+    client.post(
+        "/api/auth/register",
+        json={"username": username, "password": password, "role": role},
+    )
+    response = client.post(
+        "/api/auth/login",
+        json={"username": username, "password": password},
+    )
+    token = response.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def admin_headers(client):
+    """Auth headers for an admin user."""
+    return register_and_login(client, "admin", "adminpass", "admin")
+
+
+@pytest.fixture
+def user_headers(client):
+    """Auth headers for a normal user."""
+    return register_and_login(client, "regular", "userpass", "user")
