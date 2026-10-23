@@ -126,3 +126,133 @@ def test_search_requires_authentication(client):
     """RED: Search endpoint should require authentication."""
     response = client.get("/api/vehicles?search=toyota")
     assert response.status_code == 401
+
+
+def test_admin_can_update_vehicle(client, admin_headers):
+    """RED: Admin should be able to update an existing vehicle."""
+    # Create a vehicle
+    response = client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    vehicle_id = response.json()["id"]
+
+    # Update it
+    response = client.put(
+        f"/api/vehicles/{vehicle_id}",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 23000.00, "quantity": 3},
+        headers=admin_headers,
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["price"] == 23000.00
+    assert data["quantity"] == 3
+
+
+def test_non_admin_cannot_update_vehicle(client, admin_headers, user_headers):
+    """RED: A non-admin user should get 403 when trying to update a vehicle."""
+    response = client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    vehicle_id = response.json()["id"]
+
+    response = client.put(
+        f"/api/vehicles/{vehicle_id}",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 23000.00, "quantity": 3},
+        headers=user_headers,
+    )
+    assert response.status_code == 403
+
+
+def test_update_nonexistent_vehicle_returns_404(client, admin_headers):
+    """RED: Updating a vehicle that doesn't exist should return 404."""
+    response = client.put(
+        "/api/vehicles/9999",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    assert response.status_code == 404
+
+
+def test_admin_can_delete_vehicle(client, admin_headers):
+    """RED: Admin should be able to delete a vehicle."""
+    response = client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    vehicle_id = response.json()["id"]
+
+    response = client.delete(f"/api/vehicles/{vehicle_id}", headers=admin_headers)
+    assert response.status_code == 200
+
+    # Verify it's gone
+    response = client.get("/api/vehicles", headers=admin_headers)
+    assert response.json() == []
+
+
+def test_non_admin_cannot_delete_vehicle(client, admin_headers, user_headers):
+    """RED: A non-admin user should get 403 when trying to delete a vehicle."""
+    response = client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    vehicle_id = response.json()["id"]
+
+    response = client.delete(f"/api/vehicles/{vehicle_id}", headers=user_headers)
+    assert response.status_code == 403
+
+
+def test_delete_nonexistent_vehicle_returns_404(client, admin_headers):
+    """RED: Deleting a vehicle that doesn't exist should return 404."""
+    response = client.delete("/api/vehicles/9999", headers=admin_headers)
+    assert response.status_code == 404
+
+
+def test_admin_can_restock_vehicle(client, admin_headers):
+    """RED: Admin should be able to restock a vehicle, increasing its quantity."""
+    response = client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 2},
+        headers=admin_headers,
+    )
+    vehicle_id = response.json()["id"]
+
+    response = client.post(
+        f"/api/vehicles/{vehicle_id}/restock",
+        json={"quantity": 10},
+        headers=admin_headers,
+    )
+    assert response.status_code == 200
+    assert response.json()["quantity"] == 12
+
+
+def test_non_admin_cannot_restock_vehicle(client, admin_headers, user_headers):
+    """RED: A non-admin user should get 403 when trying to restock a vehicle."""
+    response = client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 2},
+        headers=admin_headers,
+    )
+    vehicle_id = response.json()["id"]
+
+    response = client.post(
+        f"/api/vehicles/{vehicle_id}/restock",
+        json={"quantity": 10},
+        headers=user_headers,
+    )
+    assert response.status_code == 403
+
+
+def test_restock_nonexistent_vehicle_returns_404(client, admin_headers):
+    """RED: Restocking a vehicle that doesn't exist should return 404."""
+    response = client.post(
+        "/api/vehicles/9999/restock",
+        json={"quantity": 10},
+        headers=admin_headers,
+    )
+    assert response.status_code == 404
