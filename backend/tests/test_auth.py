@@ -73,3 +73,27 @@ def test_login_nonexistent_user_returns_401(client, db_session):
         json={"username": "ghost", "password": "secret123"},
     )
     assert response.status_code == 401
+
+
+def test_jwt_secret_is_configurable_via_env(monkeypatch):
+    """RED: Token signed with env secret must fail validation if secret changes."""
+    import importlib
+    from app import auth
+
+    # Create a token with the current (hardcoded) secret
+    token_with_old_secret = auth.create_access_token({"sub": "alice", "role": "user"})
+
+    # Change the env secret and reload the module
+    monkeypatch.setenv("SECRET_KEY", "completely-different-secret")
+    importlib.reload(auth)
+
+    # Token signed with old secret should now fail to decode
+    from jose import JWTError
+    try:
+        auth.decode_access_token(token_with_old_secret)
+        assert False, "Should have raised JWTError"
+    except JWTError:
+        pass  # expected
+
+    # Restore
+    importlib.reload(auth)
