@@ -61,6 +61,17 @@ export const api = {
     return request(`/vehicles${query ? `?${query}` : ''}`)
   },
 
+  searchVehicles: (params = {}) => {
+    const { search = '', category = '', minPrice = '', maxPrice = '' } = params
+    const qs = new URLSearchParams()
+    if (search) qs.set('search', search)
+    if (category) qs.set('category', category)
+    if (minPrice) qs.set('min_price', minPrice)
+    if (maxPrice) qs.set('max_price', maxPrice)
+    const query = qs.toString()
+    return request(`/vehicles/search${query ? `?${query}` : ''}`)
+  },
+
   createVehicle: (vehicle) =>
     request('/vehicles', {
       method: 'POST',

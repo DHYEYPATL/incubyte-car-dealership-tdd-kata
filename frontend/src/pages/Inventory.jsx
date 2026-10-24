@@ -28,7 +28,11 @@ export default function Inventory() {
 
   const fetchVehicles = useCallback(async () => {
     setLoading(true)
-    const res = await api.getVehicles({ search, category, minPrice, maxPrice })
+    const params = { search, category, minPrice, maxPrice }
+    const hasFilters = search || category || minPrice || maxPrice
+    const res = hasFilters
+      ? await api.searchVehicles(params)
+      : await api.getVehicles()
     if (res.ok) {
       setVehicles(res.data)
       setError('')
