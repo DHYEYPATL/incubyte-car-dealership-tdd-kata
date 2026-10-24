@@ -97,6 +97,7 @@ export default function Inventory() {
   }
 
   const admin = isAdmin(user)
+  const handleEnter = (e) => { if (e.key === 'Enter') fetchVehicles() }
 
   return (
     <div className="app">
@@ -126,34 +127,31 @@ export default function Inventory() {
           placeholder="Search by make or model…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
+          onKeyDown={handleEnter}
         />
         <input
-          className="search-input"
+          className="search-input search-narrow"
           type="text"
           placeholder="Category…"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
-          style={{ maxWidth: '140px' }}
+          onKeyDown={handleEnter}
         />
         <input
-          className="search-input"
+          className="search-input search-price"
           type="number"
           placeholder="Min price"
           value={minPrice}
           onChange={(e) => setMinPrice(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
-          style={{ maxWidth: '120px' }}
+          onKeyDown={handleEnter}
         />
         <input
-          className="search-input"
+          className="search-input search-price"
           type="number"
           placeholder="Max price"
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
-          style={{ maxWidth: '120px' }}
+          onKeyDown={handleEnter}
         />
         <button className="btn btn-ghost" onClick={fetchVehicles}>
           Search

@@ -415,7 +415,14 @@ h3 { font-size: var(--ts-md); }
   margin-top: var(--sp-5);
 }
 
-/* === Error message === */
+/* === Filter inputs width variants === */
+.search-input.search-narrow {
+  max-width: 140px;
+}
+
+.search-input.search-price {
+  max-width: 120px;
+}
 .error-msg {
   color: var(--c-signal-red);
   font-size: var(--ts-sm);
