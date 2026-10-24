@@ -17,17 +17,8 @@ def get_vehicle_or_404(db: Session, vehicle_id: int) -> Vehicle:
     return vehicle
 
 
-@router.get("", response_model=list[VehicleResponse])
-def list_vehicles(
-    search: str | None = Query(default=None),
-    category: str | None = Query(default=None),
-    min_price: float | None = Query(default=None),
-    max_price: float | None = Query(default=None),
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    """Return all vehicles, optionally filtered by search term, category, or price range."""
-    query = db.query(Vehicle)
+def apply_vehicle_filters(query, search, category, min_price, max_price):
+    """Apply optional filters to a Vehicle query."""
     if search:
         pattern = f"%{search}%"
         query = query.filter(
@@ -42,6 +33,20 @@ def list_vehicles(
         query = query.filter(Vehicle.price >= min_price)
     if max_price is not None:
         query = query.filter(Vehicle.price <= max_price)
+    return query
+
+
+@router.get("", response_model=list[VehicleResponse])
+def list_vehicles(
+    search: str | None = Query(default=None),
+    category: str | None = Query(default=None),
+    min_price: float | None = Query(default=None),
+    max_price: float | None = Query(default=None),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Return all vehicles, optionally filtered by search term, category, or price range."""
+    query = apply_vehicle_filters(db.query(Vehicle), search, category, min_price, max_price)
     return query.all()
 
 
@@ -55,21 +60,7 @@ def search_vehicles(
     db: Session = Depends(get_db),
 ):
     """Search vehicles by make, model, category, or price range."""
-    query = db.query(Vehicle)
-    if search:
-        pattern = f"%{search}%"
-        query = query.filter(
-            or_(
-                Vehicle.make.ilike(pattern),
-                Vehicle.model.ilike(pattern),
-            )
-        )
-    if category:
-        query = query.filter(Vehicle.category.ilike(category))
-    if min_price is not None:
-        query = query.filter(Vehicle.price >= min_price)
-    if max_price is not None:
-        query = query.filter(Vehicle.price <= max_price)
+    query = apply_vehicle_filters(db.query(Vehicle), search, category, min_price, max_price)
     return query.all()
 
 
