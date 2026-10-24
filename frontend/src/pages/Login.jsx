@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../services/api'
-import { decodeToken } from '../services/auth'
 
 export default function Login() {
   const navigate = useNavigate()
-  const [mode, setMode] = useState('login')
+  const [isRegister, setIsRegister] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('user')
@@ -15,7 +14,7 @@ export default function Login() {
     e.preventDefault()
     setError('')
 
-    if (mode === 'register') {
+    if (isRegister) {
       const res = await api.register(username, password, role)
       if (!res.ok) {
         setError(res.data?.detail || 'Registration failed')
@@ -40,15 +39,15 @@ export default function Login() {
 
         <div className="auth-tabs">
           <button
-            className={`auth-tab ${mode === 'login' ? 'active' : ''}`}
-            onClick={() => setMode('login')}
+            className={`auth-tab ${!isRegister ? 'active' : ''}`}
+            onClick={() => setIsRegister(false)}
             type="button"
           >
             Sign in
           </button>
           <button
-            className={`auth-tab ${mode === 'register' ? 'active' : ''}`}
-            onClick={() => setMode('register')}
+            className={`auth-tab ${isRegister ? 'active' : ''}`}
+            onClick={() => setIsRegister(true)}
             type="button"
           >
             Register
@@ -82,7 +81,7 @@ export default function Login() {
             />
           </div>
 
-          {mode === 'register' && (
+          {isRegister && (
             <div className="form-group">
               <label htmlFor="role">Role</label>
               <select
@@ -97,7 +96,7 @@ export default function Login() {
           )}
 
           <button type="submit" className="btn btn-primary btn-block">
-            {mode === 'login' ? 'Sign in' : 'Register'}
+            {isRegister ? 'Register' : 'Sign in'}
           </button>
         </form>
       </div>
