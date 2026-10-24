@@ -1,10 +1,16 @@
+import os
 import bcrypt
 from datetime import datetime, timedelta, timezone
 from jose import jwt
 
-SECRET_KEY = "test-secret-key-not-for-production"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
+_DEFAULT_SECRET = "change-me-in-production"
+
+
+def _secret_key() -> str:
+    """Read JWT secret from environment at call time."""
+    return os.environ.get("SECRET_KEY", _DEFAULT_SECRET)
 
 
 def hash_password(password: str) -> str:
@@ -25,9 +31,9 @@ def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(to_encode, _secret_key(), algorithm=ALGORITHM)
 
 
 def decode_access_token(token: str) -> dict:
     """Decode and verify a JWT access token."""
-    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    return jwt.decode(token, _secret_key(), algorithms=[ALGORITHM])
