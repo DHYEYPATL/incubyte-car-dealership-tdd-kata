@@ -20,10 +20,13 @@ def get_vehicle_or_404(db: Session, vehicle_id: int) -> Vehicle:
 @router.get("", response_model=list[VehicleResponse])
 def list_vehicles(
     search: str | None = Query(default=None),
+    category: str | None = Query(default=None),
+    min_price: float | None = Query(default=None),
+    max_price: float | None = Query(default=None),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    """Return all vehicles, optionally filtered by search term."""
+    """Return all vehicles, optionally filtered by search term, category, or price range."""
     query = db.query(Vehicle)
     if search:
         pattern = f"%{search}%"
@@ -33,6 +36,12 @@ def list_vehicles(
                 Vehicle.model.ilike(pattern),
             )
         )
+    if category:
+        query = query.filter(Vehicle.category.ilike(category))
+    if min_price is not None:
+        query = query.filter(Vehicle.price >= min_price)
+    if max_price is not None:
+        query = query.filter(Vehicle.price <= max_price)
     return query.all()
 
 
