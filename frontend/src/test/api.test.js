@@ -130,4 +130,15 @@ describe('api service', () => {
 
     expect(api.getToken()).toBeNull()
   })
+
+  it('searchVehicles calls the dedicated /api/vehicles/search endpoint', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] })
+
+    await api.searchVehicles({ search: 'toyota', category: 'Sedan' })
+
+    const calledUrl = mockFetch.mock.calls[0][0]
+    expect(calledUrl).toContain('/api/vehicles/search')
+    expect(calledUrl).toContain('search=toyota')
+    expect(calledUrl).toContain('category=Sedan')
+  })
 })
