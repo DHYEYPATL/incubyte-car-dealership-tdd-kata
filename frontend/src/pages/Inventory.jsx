@@ -10,6 +10,9 @@ export default function Inventory() {
   const [user, setUser] = useState(null)
   const [vehicles, setVehicles] = useState([])
   const [search, setSearch] = useState('')
+  const [category, setCategory] = useState('')
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [modal, setModal] = useState(null)
@@ -25,7 +28,7 @@ export default function Inventory() {
 
   const fetchVehicles = useCallback(async () => {
     setLoading(true)
-    const res = await api.getVehicles(search)
+    const res = await api.getVehicles({ search, category, minPrice, maxPrice })
     if (res.ok) {
       setVehicles(res.data)
       setError('')
@@ -35,7 +38,7 @@ export default function Inventory() {
       setError('Could not load vehicles')
     }
     setLoading(false)
-  }, [search, navigate])
+  }, [search, category, minPrice, maxPrice, navigate])
 
   useEffect(() => {
     if (user) fetchVehicles()
@@ -124,6 +127,33 @@ export default function Inventory() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
+        />
+        <input
+          className="search-input"
+          type="text"
+          placeholder="Category…"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
+          style={{ maxWidth: '140px' }}
+        />
+        <input
+          className="search-input"
+          type="number"
+          placeholder="Min price"
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
+          style={{ maxWidth: '120px' }}
+        />
+        <input
+          className="search-input"
+          type="number"
+          placeholder="Max price"
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && fetchVehicles()}
+          style={{ maxWidth: '120px' }}
         />
         <button className="btn btn-ghost" onClick={fetchVehicles}>
           Search

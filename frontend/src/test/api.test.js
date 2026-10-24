@@ -71,15 +71,22 @@ describe('api service', () => {
   })
 
   it('getVehicles appends search param when provided', async () => {
-    mockFetch.mockResolvedValueOnce({
-      ok: true,
-      status: 200,
-      json: async () => [],
-    })
+    mockFetch.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] })
 
-    await api.getVehicles('toyota')
+    await api.getVehicles({ search: 'toyota' })
 
     expect(mockFetch).toHaveBeenCalledWith('/api/vehicles?search=toyota', expect.any(Object))
+  })
+
+  it('getVehicles appends category and price range params when provided', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: true, status: 200, json: async () => [] })
+
+    await api.getVehicles({ category: 'Sedan', minPrice: '20000', maxPrice: '30000' })
+
+    const calledUrl = mockFetch.mock.calls[0][0]
+    expect(calledUrl).toContain('category=Sedan')
+    expect(calledUrl).toContain('min_price=20000')
+    expect(calledUrl).toContain('max_price=30000')
   })
 
   it('purchaseVehicle sends POST to purchase endpoint', async () => {
