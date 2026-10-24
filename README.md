@@ -8,7 +8,8 @@ A car dealership inventory management system built using strict Test-Driven Deve
 
 - Register and log in as an **admin** (manage inventory) or **user** (browse and purchase)
 - View all vehicles in a stock-sheet table with a **stock gauge bar** (green/amber/empty)
-- Search vehicles by make or model (case-insensitive)
+- Search vehicles by make, model, category, or price range
+- Search via `GET /api/vehicles` (with params) or the dedicated `GET /api/vehicles/search`
 - Purchase a vehicle — quantity decreases by 1; button disabled when out of stock
 - Admin: add, edit, delete, and restock vehicles
 
@@ -71,7 +72,7 @@ Open http://localhost:5173 — register an account, then log in.
 backend\venv\Scripts\python.exe -m pytest backend/tests/ -v
 ```
 
-Expected: **23 passed**
+Expected: **28 passed**
 
 ### Frontend tests (from frontend/)
 
@@ -80,49 +81,37 @@ cd frontend
 npm test
 ```
 
-Expected: **33 passed**
+Expected: **34 passed**
 
 ---
 
 ## Test Report
 
-### Backend — 23 tests
+### Backend — 28 tests
 
 ```
-test_auth.py::test_register_user_success PASSED
-test_auth.py::test_register_duplicate_user_fails PASSED
-test_auth.py::test_login_success_returns_jwt PASSED
-test_auth.py::test_login_wrong_password_returns_401 PASSED
-test_auth.py::test_login_nonexistent_user_returns_401 PASSED
-test_vehicles.py::test_get_vehicles_empty PASSED
-test_vehicles.py::test_admin_can_add_vehicle PASSED
-test_vehicles.py::test_non_admin_cannot_add_vehicle PASSED
-test_vehicles.py::test_purchase_decreases_quantity PASSED
-test_vehicles.py::test_purchase_out_of_stock_returns_400 PASSED
-test_vehicles.py::test_purchase_nonexistent_vehicle_returns_404 PASSED
-test_vehicles.py::test_search_returns_matching_vehicles PASSED
-test_vehicles.py::test_search_no_matches_returns_empty PASSED
-test_vehicles.py::test_search_requires_authentication PASSED
-test_vehicles.py::test_admin_can_update_vehicle PASSED
-test_vehicles.py::test_non_admin_cannot_update_vehicle PASSED
-test_vehicles.py::test_update_nonexistent_vehicle_returns_404 PASSED
-test_vehicles.py::test_admin_can_delete_vehicle PASSED
-test_vehicles.py::test_non_admin_cannot_delete_vehicle PASSED
-test_vehicles.py::test_delete_nonexistent_vehicle_returns_404 PASSED
-test_vehicles.py::test_admin_can_restock_vehicle PASSED
-test_vehicles.py::test_non_admin_cannot_restock_vehicle PASSED
-test_vehicles.py::test_restock_nonexistent_vehicle_returns_404 PASSED
+test_auth.py (5) — register success, duplicate fails, login success, wrong password, nonexistent user
+test_vehicles.py (23) — list, add (admin only), purchase (quantity/stock/404), search (make/model/
+                         category/price range), dedicated /search endpoint, update (admin only),
+                         delete (admin only), restock (admin only)
 ```
 
-### Frontend — 33 tests
+### Frontend — 34 tests
 
 ```
-api.test.js (7) — API service: login, register, getVehicles, purchase, create, 401 handling
-auth.test.js (2) — JWT decode: valid payload, invalid/null token
-StockGauge.test.jsx (6) — quantity display, in-stock/low/out classes, fill width, cap at 100%
-VehicleRow.test.jsx (6) — render fields, Buy enabled/disabled, onPurchase callback, admin buttons
-Login.test.jsx (6) — tabs, fields, role field, api call, token storage, error display
-Inventory.test.jsx (6) — render list, Buy/Sold out states, empty state, admin vs user views
+api.test.js (8)         — login, register, getVehicles (auth header, search param,
+                          category+price params), purchase, createVehicle, 401 clears token
+auth.test.js (2)        — decodeToken: valid JWT payload, null for invalid/empty token
+StockGauge.test.jsx (6) — quantity number, in-stock/low/out CSS classes,
+                          fill width proportional to max, capped at 100%
+VehicleRow.test.jsx (6) — renders make/model/category/price, Buy enabled when stock > 0,
+                          Buy disabled (Sold out) when 0, calls onPurchase with id,
+                          admin buttons shown/hidden by role
+Login.test.jsx (6)      — tabs render, username/password fields, role field (register only),
+                          api.login called with credentials, token stored on success,
+                          error message on failure
+Inventory.test.jsx (6)  — renders vehicle list from API, Buy enabled/disabled per stock,
+                          empty state, admin buttons shown/hidden by role
 ```
 
 ---
@@ -161,6 +150,12 @@ ea23b1d test: add failing tests for VehicleRow component
 3a1b21b refactor: replace mode string with isRegister bool, remove unused import
 3d3985a test: add tests for Inventory page rendering and admin vs user views
 e970cb9 feat: wire Inventory to VehicleRow and VehicleModal components
+03185f5 test: add failing tests for category and price range filters
+5ef21b4 feat: add category and price range filters to vehicle search
+c956a94 refactor: extract handleEnter, move inline styles to CSS classes
+c1f8c45 test: add failing tests for dedicated GET /api/vehicles/search endpoint
+801d2db feat: add dedicated GET /api/vehicles/search endpoint
+a7b505e refactor: extract apply_vehicle_filters to remove duplication
 ```
 
 ---
