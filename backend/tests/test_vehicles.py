@@ -256,3 +256,74 @@ def test_restock_nonexistent_vehicle_returns_404(client, admin_headers):
         headers=admin_headers,
     )
     assert response.status_code == 404
+
+
+def test_search_by_category(client, admin_headers, user_headers):
+    """RED: Search by category should return matching vehicles."""
+    client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    client.post(
+        "/api/vehicles",
+        json={"make": "Ford", "model": "F-150", "category": "Truck", "price": 35000.00, "quantity": 3},
+        headers=admin_headers,
+    )
+
+    response = client.get("/api/vehicles?category=Sedan", headers=user_headers)
+    assert response.status_code == 200
+    results = response.json()
+    assert len(results) == 1
+    assert results[0]["category"] == "Sedan"
+
+
+def test_search_by_price_range(client, admin_headers, user_headers):
+    """RED: Search by price range should return vehicles within range."""
+    client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    client.post(
+        "/api/vehicles",
+        json={"make": "Honda", "model": "Civic", "category": "Sedan", "price": 22000.00, "quantity": 3},
+        headers=admin_headers,
+    )
+    client.post(
+        "/api/vehicles",
+        json={"make": "Ford", "model": "F-150", "category": "Truck", "price": 45000.00, "quantity": 2},
+        headers=admin_headers,
+    )
+
+    response = client.get("/api/vehicles?min_price=20000&max_price=30000", headers=user_headers)
+    assert response.status_code == 200
+    results = response.json()
+    assert len(results) == 2
+    assert all(20000 <= v["price"] <= 30000 for v in results)
+
+
+def test_combined_search_and_filters(client, admin_headers, user_headers):
+    """RED: Multiple filters should be combinable."""
+    client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Corolla", "category": "Sedan", "price": 20000.00, "quantity": 3},
+        headers=admin_headers,
+    )
+    client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Tundra", "category": "Truck", "price": 50000.00, "quantity": 2},
+        headers=admin_headers,
+    )
+
+    # Search Toyota Sedans only
+    response = client.get("/api/vehicles?search=toyota&category=Sedan", headers=user_headers)
+    assert response.status_code == 200
+    results = response.json()
+    assert len(results) == 2
+    assert all(v["category"] == "Sedan" for v in results)
