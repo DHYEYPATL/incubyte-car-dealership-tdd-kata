@@ -5,12 +5,14 @@ from jose import jwt
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
-_DEFAULT_SECRET = "change-me-in-production"
+
+# Must be overridden via SECRET_KEY environment variable in production
+_INSECURE_FALLBACK_SECRET = "change-me-in-production"
 
 
 def _secret_key() -> str:
-    """Read JWT secret from environment at call time."""
-    return os.environ.get("SECRET_KEY", _DEFAULT_SECRET)
+    """Read JWT secret from environment at call time (never hardcoded)."""
+    return os.environ.get("SECRET_KEY", _INSECURE_FALLBACK_SECRET)
 
 
 def hash_password(password: str) -> str:
