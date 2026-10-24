@@ -327,3 +327,46 @@ def test_combined_search_and_filters(client, admin_headers, user_headers):
     results = response.json()
     assert len(results) == 2
     assert all(v["category"] == "Sedan" for v in results)
+
+
+def test_search_endpoint_exists_at_dedicated_path(client, admin_headers, user_headers):
+    """RED: GET /api/vehicles/search must exist as a dedicated endpoint per spec."""
+    client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+
+    response = client.get("/api/vehicles/search?search=toyota", headers=user_headers)
+    assert response.status_code == 200
+    results = response.json()
+    assert len(results) == 1
+    assert results[0]["make"] == "Toyota"
+
+
+def test_search_endpoint_supports_all_filters(client, admin_headers, user_headers):
+    """RED: /api/vehicles/search must support make, model, category, and price range."""
+    client.post(
+        "/api/vehicles",
+        json={"make": "Toyota", "model": "Camry", "category": "Sedan", "price": 25000.00, "quantity": 5},
+        headers=admin_headers,
+    )
+    client.post(
+        "/api/vehicles",
+        json={"make": "Ford", "model": "F-150", "category": "Truck", "price": 45000.00, "quantity": 3},
+        headers=admin_headers,
+    )
+
+    # Filter by category on /search
+    response = client.get("/api/vehicles/search?category=Truck", headers=user_headers)
+    assert response.status_code == 200
+    results = response.json()
+    assert len(results) == 1
+    assert results[0]["make"] == "Ford"
+
+    # Filter by price range on /search
+    response = client.get("/api/vehicles/search?min_price=40000", headers=user_headers)
+    assert response.status_code == 200
+    results = response.json()
+    assert len(results) == 1
+    assert results[0]["price"] == 45000.00
