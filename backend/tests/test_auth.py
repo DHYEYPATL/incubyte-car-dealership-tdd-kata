@@ -107,3 +107,13 @@ def test_cors_headers_present_on_api_response(client):
     )
     assert response.status_code in (200, 204)
     assert "access-control-allow-origin" in response.headers
+
+
+def test_cors_allows_vercel_domains(client):
+    """RED: Backend must allow requests from Vercel deployed frontends (*.vercel.app)."""
+    response = client.options(
+        "/api/auth/login",
+        headers={"Origin": "https://incubyte-dealership.vercel.app", "Access-Control-Request-Method": "POST"},
+    )
+    assert response.status_code in (200, 204)
+    assert response.headers.get("access-control-allow-origin") == "https://incubyte-dealership.vercel.app"
