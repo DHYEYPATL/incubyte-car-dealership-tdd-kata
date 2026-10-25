@@ -8,7 +8,7 @@ A car dealership inventory management system built using strict Test-Driven Deve
 
 ---
 
-## Live Demo & Repository Links
+## Live Demo
 
 - **Live Application (Vercel)**: [https://incubyte-car-dealership-tdd-kata.vercel.app/login](https://incubyte-car-dealership-tdd-kata.vercel.app/login)
 - **Backend API (Render)**: [https://incubyte-car-dealership-tdd-kata.onrender.com/](https://incubyte-car-dealership-tdd-kata.onrender.com/)
@@ -21,6 +21,16 @@ A car dealership inventory management system built using strict Test-Driven Deve
 - **User**: Username: `user` | Password: `user123` *(Browse stock & purchase vehicles)*
 - Or register a brand new account directly on the login page!
 
+---
+
+## What It Does
+
+- Register and log in as an **admin** (manage inventory) or **user** (browse and purchase)
+- View all vehicles in a stock-sheet table with a **stock gauge bar** (green/amber/empty)
+- Search vehicles by make, model, category, or price range
+- Search via `GET /api/vehicles` (with params) or the dedicated `GET /api/vehicles/search`
+- Purchase a vehicle — quantity decreases by 1; button disabled when out of stock
+- Admin: add, edit, delete, and restock vehicles
 
 ---
 
@@ -36,7 +46,6 @@ A car dealership inventory management system built using strict Test-Driven Deve
 | CI / CD | GitHub Actions (automated test runner for pytest & Vitest + keep-alive cron) |
 
 ---
-
 
 ## Setup and Run
 
@@ -75,13 +84,92 @@ Open http://localhost:5173 — register an account, then log in.
 
 ---
 
-## Test Report
+## Run Tests
 
-### Backend — 31 tests passed
+### Backend tests (from repo root)
 
 ```bash
 backend\venv\Scripts\python.exe -m pytest backend/tests/ -v
 ```
+
+Expected: **31 passed**
+
+### Frontend tests (from frontend/)
+
+```bash
+cd frontend
+npm test
+```
+
+Expected: **35 passed**
+
+---
+
+## Screenshots
+
+### Login / Register
+![Login](./screenshots/login.png)
+
+### Inventory – User View
+![User Inventory](./screenshots/inventory-user.png)
+
+### Inventory – Admin View
+![Admin Inventory](./screenshots/inventory-admin.png)
+
+### Out of Stock (Buy disabled)
+![Out of Stock](./screenshots/out-of-stock.png)
+
+---
+
+## My AI Usage
+
+### Tools used
+- **Kiro IDE** (powered by Claude) & **Antigravity** (Google DeepMind) — used throughout the project as a pair programmer
+
+### How I used AI
+
+I used AI as a **junior pair programmer**, as instructed by `INCUBYTE_TDD_RULES.md`. The workflow:
+
+1. I wrote the prompt describing the next small TDD step
+2. AI suggested the test or production code
+3. I reviewed every line, ran the tests myself, and confirmed the output
+4. I approved, rejected, or modified before committing
+
+### What I accepted vs what I rewrote
+
+**Accepted as-is (after review):**
+- Core FastAPI endpoint structure and SQLAlchemy patterns
+- JWT encode/decode implementation using python-jose
+- FastAPI dependency injection pattern for `get_current_user` / `require_admin`
+- React component structure for StockGauge, VehicleRow, VehicleModal
+- CSS token architecture in `index.css` following DESIGN.md
+
+**Modified or corrected:**
+- **Python environment**: AI suggested `passlib` + `bcrypt` which breaks on bcrypt>=5. I switched to calling `bcrypt` directly.
+- **32-bit Python**: AI didn't know my default Python was 32-bit. I identified the `greenlet` build failure and switched to `py -3.13` (64-bit).
+- **Test selectors**: Login tests used `getByRole('button', { name: 'Sign in' })` which matched both the tab and submit button. I fixed to `querySelector('[type="submit"]')`.
+- **Process violation**: AI committed frontend production code before running failing tests. I caught this, used `git reset HEAD~2` to undo the unpushed commits, proved the tests failed without the code, then recommitted in the correct order.
+
+### Impact and reflection
+
+The AI accelerated the mechanical parts (boilerplate FastAPI routes, SQLAlchemy models, React state management). The TDD discipline — deciding *what* to test, verifying the failures are meaningful, catching the process violation — required my own judgment.
+
+The `PROMPTS.md` file contains the full interaction log.
+
+Every line of AI-generated code was reviewed. I can explain and modify any of it.
+
+---
+
+## Note on early co-author trailers
+
+> [!NOTE]
+> **Contributor Attribution Notice**: In the first 9 commits (`f2d1f35` through `88071fa`), the commit messages followed the literal example snippet provided in `INCUBYTE_TDD_RULES.md` (`Co-authored-by: Kiro <AI@users.noreply.github.com>`). GitHub automatically maps the handle `<AI@users.noreply.github.com>` to the GitHub account `shimonenator` (Shimon Schwartz). Per strict Incubyte rules (*"Never rewrite history, never force-push"*), the Git history was kept intact. All commits and production code were authored by DHYEYPATL.
+
+---
+
+## Test Report
+
+### Backend — 31 tests
 
 ```
 test_auth.py (8) — register success, duplicate fails, login success, wrong password,
@@ -92,11 +180,7 @@ test_vehicles.py (23) — list, add (admin only), purchase (quantity/stock/404),
                          delete (admin only), restock (admin only)
 ```
 
-### Frontend — 35 tests passed
-
-```bash
-cd frontend && npm test
-```
+### Frontend — 35 tests
 
 ```
 api.test.js (9)         — login, register, getVehicles (auth header, search param,
@@ -171,63 +255,3 @@ f7377bd feat: configure CORS for Vercel, dynamic API URL, and deployment configs
 027bd92 feat: add Render keep-alive cron workflow and handcrafted SVG favicon
 c40e3a3 docs: remove GitHub Pages preview link and streamline CI workflow
 ```
-
----
-
-## My AI Usage
-
-### Tools used
-- **Kiro IDE** (powered by Claude) & **Antigravity** (Google DeepMind) — used throughout the project as a pair programmer
-
-> [!NOTE]
-> **Contributor Attribution Notice**: In the first 9 commits (`f2d1f35` through `88071fa`), the commit messages followed the literal example snippet provided in `INCUBYTE_TDD_RULES.md` (`Co-authored-by: Kiro <AI@users.noreply.github.com>`). GitHub automatically maps the handle `<AI@users.noreply.github.com>` to the GitHub account `shimonenator` (Shimon Schwartz). Per strict Incubyte rules (*"Never rewrite history, never force-push"*), the Git history was kept intact. All commits and production code were authored by DHYEYPATL.
-
-
-
-### How I used AI
-
-I used AI as a **junior pair programmer**, as instructed by `INCUBYTE_TDD_RULES.md`. The workflow:
-
-1. I wrote the prompt describing the next small TDD step
-2. AI suggested the test or production code
-3. I reviewed every line, ran the tests myself, and confirmed the output
-4. I approved, rejected, or modified before committing
-
-### What I accepted vs what I rewrote
-
-**Accepted as-is (after review):**
-- Core FastAPI endpoint structure and SQLAlchemy patterns
-- JWT encode/decode implementation using python-jose
-- FastAPI dependency injection pattern for `get_current_user` / `require_admin`
-- React component structure for StockGauge, VehicleRow, VehicleModal
-- CSS token architecture in `index.css` following DESIGN.md
-
-**Modified or corrected:**
-- **Python environment**: AI suggested `passlib` + `bcrypt` which breaks on bcrypt>=5. I switched to calling `bcrypt` directly.
-- **32-bit Python**: AI didn't know my default Python was 32-bit. I identified the `greenlet` build failure and switched to `py -3.13` (64-bit).
-- **Test selectors**: Login tests used `getByRole('button', { name: 'Sign in' })` which matched both the tab and submit button. I fixed to `querySelector('[type="submit"]')`.
-- **Process violation**: AI committed frontend production code before running failing tests. I caught this, used `git reset HEAD~2` to undo the unpushed commits, proved the tests failed without the code, then recommitted in the correct order.
-
-### Impact and reflection
-
-The AI accelerated the mechanical parts (boilerplate FastAPI routes, SQLAlchemy models, React state management). The TDD discipline — deciding *what* to test, verifying the failures are meaningful, catching the process violation — required my own judgment.
-
-The `PROMPTS.md` file contains the full interaction log.
-
-Every line of AI-generated code was reviewed. I can explain and modify any of it.
-
----
-
-## Screenshots
-
-### Login / Register
-![Login](./screenshots/login.png)
-
-### Inventory – User View
-![User Inventory](./screenshots/inventory-user.png)
-
-### Inventory – Admin View
-![Admin Inventory](./screenshots/inventory-admin.png)
-
-### Out of Stock (Buy disabled)
-![Out of Stock](./screenshots/out-of-stock.png)
