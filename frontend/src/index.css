@@ -9,6 +9,11 @@
   --c-signal-green: #3B8A3B;
   --c-signal-red: #C83838;
 
+  /* Derived — within DESIGN.md palette */
+  --c-amber-subtle: rgba(255, 138, 0, 0.08);   /* amber at 8% — for hover/selected states */
+  --c-row-hover: #F0F2F5;                        /* slightly darker than frost for table rows */
+  --c-track: #DDE0E5;                            /* visible gauge track — darker steel */
+
   /* Type families */
   --ff-display: 'Archivo', 'Arial Narrow', sans-serif;
   --ff-body: 'Onest', system-ui, sans-serif;
@@ -28,6 +33,7 @@
 
   /* Borders */
   --border: 1px solid rgba(90, 98, 112, 0.2);
+  --border-strong: 1px solid rgba(90, 98, 112, 0.4);
   --border-focus: 2px solid var(--c-amber);
 
   /* Shadows */
@@ -92,15 +98,17 @@ h3 { font-size: var(--ts-md); }
 .app-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   padding-bottom: var(--sp-5);
-  border-bottom: var(--border);
+  border-bottom: var(--border-strong);
   margin-bottom: var(--sp-5);
 }
 
 .app-header h1 {
   font-stretch: condensed;
-  text-transform: none;
+  letter-spacing: -0.03em;
+  font-size: var(--ts-xl);
+  color: var(--c-asphalt);
 }
 
 /* === Login / Register forms === */
@@ -109,19 +117,24 @@ h3 { font-size: var(--ts-md); }
   justify-content: center;
   align-items: flex-start;
   padding: var(--sp-8) var(--sp-5);
+  min-height: 100vh;
 }
 
 .auth-card {
   background: var(--c-frost);
   border: var(--border);
+  border-left: 3px solid var(--c-amber);   /* single deliberate break: amber left rail */
   border-radius: var(--r-md);
   padding: var(--sp-6);
   width: 100%;
   max-width: 380px;
+  margin-top: var(--sp-8);
 }
 
 .auth-card h1 {
   font-size: var(--ts-lg);
+  font-stretch: condensed;
+  letter-spacing: -0.02em;
   margin-bottom: var(--sp-4);
 }
 
@@ -213,17 +226,23 @@ h3 { font-size: var(--ts-md); }
 }
 
 .btn-primary:hover:not(:disabled) {
-  opacity: 0.85;
+  opacity: 0.88;
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--c-amber);
+  outline-offset: 2px;
 }
 
 .btn-ghost {
   background: none;
   color: var(--c-slate);
-  border: var(--border);
+  border: var(--border-strong);
 }
 
 .btn-ghost:hover:not(:disabled) {
   color: var(--c-asphalt);
+  border-color: rgba(90, 98, 112, 0.6);
 }
 
 .btn-danger {
@@ -274,6 +293,10 @@ h3 { font-size: var(--ts-md); }
   width: 100%;
   border-collapse: collapse;
   font-size: var(--ts-sm);
+  background: var(--c-frost);            /* table floats off the steel page background */
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: var(--border);
 }
 
 .vehicle-table thead th {
@@ -283,9 +306,11 @@ h3 { font-size: var(--ts-md); }
   font-size: var(--ts-xs);
   color: var(--c-slate);
   text-align: left;
-  padding: var(--sp-2) var(--sp-3);
-  border-bottom: var(--border);
+  padding: var(--sp-3) var(--sp-3);
+  background: var(--c-steel);            /* distinct header surface */
+  border-bottom: var(--border-strong);
   white-space: nowrap;
+  letter-spacing: 0.02em;
 }
 
 .vehicle-table tbody td {
@@ -294,12 +319,16 @@ h3 { font-size: var(--ts-md); }
   vertical-align: middle;
 }
 
+.vehicle-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
 .vehicle-table tbody tr {
   transition: background 100ms ease-out;
 }
 
 .vehicle-table tbody tr:hover {
-  background: var(--c-frost);
+  background: var(--c-row-hover);       /* now visibly different from frost */
 }
 
 /* Staggered fade-in for table rows */
@@ -330,9 +359,9 @@ h3 { font-size: var(--ts-md); }
 }
 
 .stock-bar {
-  width: 60px;
-  height: 8px;
-  background: var(--c-steel);
+  width: 64px;
+  height: 6px;
+  background: var(--c-track);            /* now visible even when empty */
   border-radius: var(--r-sm);
   overflow: hidden;
 }
@@ -380,7 +409,7 @@ h3 { font-size: var(--ts-md); }
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(27, 30, 38, 0.3);
+  background: rgba(27, 30, 38, 0.45);   /* slightly denser scrim */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -389,18 +418,21 @@ h3 { font-size: var(--ts-md); }
 
 .modal {
   background: var(--c-frost);
+  border: var(--border);
+  border-top: 2px solid var(--c-amber);  /* amber top rail — echoes the auth card */
   border-radius: var(--r-md);
   box-shadow: var(--shadow-modal);
   padding: var(--sp-6);
   width: 100%;
   max-width: 460px;
-  animation: modal-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .modal { animation: modal-in 200ms cubic-bezier(0.22, 1, 0.36, 1); }
+
   @keyframes modal-in {
     from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 }
 
