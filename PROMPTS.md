@@ -210,14 +210,28 @@ Each vehicle feature was implemented through strict isolated iterations:
 
 ---
 
+### Phase 17 — Production Deployment Architecture (Vercel + Render)
+**Prompt:**
+> Set up Vercel and Render-based deployment according to Incubyte standards:
+> 1. Frontend on Vercel with SPA client routing (`vercel.json`), configurable `VITE_API_URL`, and production build integrity.
+> 2. Backend on Render with FastAPI Web Service configuration, `render.yaml` Blueprint, wildcard Vercel CORS domain regex (`*.vercel.app`), health check endpoints (`/health`), and optional auto-seeding for reviewer ease.
+
+- Red: `336b1ed test: add failing test for Vercel CORS domain support`
+- Green: `feat: configure CORS for Vercel, dynamic API URL, and deployment configs for Render & Vercel`
+- **What AI did:** Added `allow_origin_regex` to CORSMiddleware, updated `frontend/src/services/api.js` to dynamically prepend `VITE_API_URL`, created `frontend/vercel.json`, `render.yaml`, `backend/app/seed.py`, `backend/.env.example`, and `frontend/.env.example`.
+- **Human Verification:** Verified all 31 pytest tests and 35 Vitest tests pass. Confirmed SPA routing fallback works properly and production bundle builds cleanly.
+
+---
+
 ## 3. Human Oversight & Reflection Summary
 
-- **Total Backend Tests:** 30 passing
+- **Total Backend Tests:** 31 passing
 - **Total Frontend Tests:** 35 passing
-- **Primary AI Pairing Tool:** Kiro IDE (powered by Claude)
+- **Primary AI Pairing Tool:** Kiro IDE / Antigravity
 - **Reviewer:** 100% human oversight on every commit
 - **Key Interventions:**
   1. Resolved Python architecture/wheel build issues (64-bit switch).
   2. Fixed deprecated `passlib` cryptography bugs by moving to standard `bcrypt`.
   3. Enforced TDD integrity when AI attempted to write frontend production code ahead of tests.
-  4. Ensured all commits adhere to the Red → Green → Refactor narrative with proper co-author trailers.
+  4. Configured CORS domain regex so dynamic Vercel preview/production deployments connect seamlessly.
+  5. Ensured all commits adhere to the Red → Green → Refactor narrative with proper co-author trailers.

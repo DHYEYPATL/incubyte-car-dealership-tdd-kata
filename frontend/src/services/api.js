@@ -1,4 +1,7 @@
-const API_URL = '/api'
+const RAW_API_URL = (import.meta.env?.VITE_API_URL || '').replace(/\/+$/, '')
+const API_URL = RAW_API_URL
+  ? (RAW_API_URL.endsWith('/api') ? RAW_API_URL : `${RAW_API_URL}/api`)
+  : '/api'
 
 function getToken() {
   return localStorage.getItem('token')

@@ -9,8 +9,16 @@ A car dealership inventory management system built using strict Test-Driven Deve
 
 ## Live Demo & Repository Links
 
-- **Live Frontend Demo**: [https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
+- **Frontend (Vercel)**: `https://incubyte-car-dealership.vercel.app` *(set to your Vercel deployment URL)*
+- **Backend API (Render)**: `https://incubyte-car-dealership-api.onrender.com` *(or your Render URL)*
+- **Interactive API Docs (Swagger)**: `https://incubyte-car-dealership-api.onrender.com/docs`
+- **GitHub Pages Preview**: [https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
 - **GitHub Repository**: [https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata)
+
+### Default Demo Credentials (Auto-seeded)
+- **Admin**: Username: `admin` | Password: `admin123` *(Full inventory management)*
+- **User**: Username: `user` | Password: `user123` *(Browse & purchase vehicles)*
+- Or register a brand new account with any role on the login page!
 
 ---
 
@@ -77,6 +85,47 @@ Open http://localhost:5173 — register an account, then log in.
 
 ---
 
+## Deployment Guide (Vercel + Render)
+
+This application is architected for zero-friction cloud deployment following standard modern best practices:
+- **Frontend → Vercel** (Edge CDN, fast Vite build, client-side SPA routing)
+- **Backend → Render** (FastAPI Web Service, SQLite, automatic CORS regex & health checks)
+
+### 1. Deploy Backend to Render
+
+1. Log in to [Render Dashboard](https://dashboard.render.com/) and click **New +** → **Web Service** (or use **Blueprint** pointing to `render.yaml`).
+2. Connect your GitHub repository: `incubyte-car-dealership-tdd-kata`.
+3. Configure the service settings:
+   - **Name**: `incubyte-car-dealership-api`
+   - **Root Directory**: `backend`
+   - **Runtime**: `Python 3`
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+4. Add Environment Variables:
+   - `SECRET_KEY`: `<generate-a-secure-random-key>` *(e.g. `openssl rand -hex 32`)*
+   - `AUTO_SEED`: `true` *(auto-populates demo cars and admin/user accounts on fresh disk)*
+   - `PYTHON_VERSION`: `3.11.9`
+5. Click **Deploy Web Service** and copy your backend URL (e.g., `https://incubyte-car-dealership-api.onrender.com`).
+   - Live health check endpoint: `/health` returns `{"status":"ok"}`.
+   - Live OpenAPI / Swagger docs: `/docs`.
+
+### 2. Deploy Frontend to Vercel
+
+1. Log in to [Vercel](https://vercel.com/) and click **Add New...** → **Project**.
+2. Import the same GitHub repository.
+3. Configure the project:
+   - **Framework Preset**: `Vite`
+   - **Root Directory**: click **Edit** and choose `frontend`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Expand **Environment Variables** and add:
+   - `VITE_API_URL`: `https://incubyte-car-dealership-api.onrender.com` *(your Render backend URL)*
+5. Click **Deploy**.
+   - `frontend/vercel.json` ensures full client-side SPA routing (`/login` refreshes smoothly without 404s).
+   - Backend CORS automatically authorizes all `https://*.vercel.app` domains out-of-the-box.
+
+---
+
 ## Run Tests
 
 ### Backend tests (from repo root)
@@ -85,7 +134,7 @@ Open http://localhost:5173 — register an account, then log in.
 backend\venv\Scripts\python.exe -m pytest backend/tests/ -v
 ```
 
-Expected: **30 passed**
+Expected: **31 passed**
 
 ### Frontend tests (from frontend/)
 
@@ -100,15 +149,17 @@ Expected: **35 passed**
 
 ## Test Report
 
-### Backend — 30 tests
+### Backend — 31 tests
 
 ```
-test_auth.py (7) — register success, duplicate fails, login success, wrong password,
-                   nonexistent user, configurable JWT secret via env, CORS headers
+test_auth.py (8) — register success, duplicate fails, login success, wrong password,
+                   nonexistent user, configurable JWT secret via env, CORS headers,
+                   Vercel CORS domains (*.vercel.app)
 test_vehicles.py (23) — list, add (admin only), purchase (quantity/stock/404), search (make/model/
                          category/price range), dedicated /search endpoint, update (admin only),
                          delete (admin only), restock (admin only)
 ```
+
 
 ### Frontend — 35 tests
 
@@ -170,6 +221,17 @@ c956a94 refactor: extract handleEnter, move inline styles to CSS classes
 c1f8c45 test: add failing tests for dedicated GET /api/vehicles/search endpoint
 801d2db feat: add dedicated GET /api/vehicles/search endpoint
 a7b505e refactor: extract apply_vehicle_filters to remove duplication
+366000c test: add failing test for JWT secret configurable via env var
+2195bf8 feat: read JWT SECRET_KEY from environment variable at call time
+ffe371b refactor: rename _DEFAULT_SECRET to _INSECURE_FALLBACK_SECRET, add comment
+137ab84 refactor: UI polish - table surface, auth rail, ghost border, gauge track
+0f0f2b4 test: add failing test for CORS headers on API responses
+479ad74 feat: add CORS middleware and surface API errors in UI
+d3286f4 refactor: consistent error clearing on success, cleaner error messages
+03b55da docs: add screenshots, structured TDD rules, and audit fixes
+3918474 feat: integrate Tailwind CSS, add GitHub Actions CI/CD, and live deployment
+336b1ed test: add failing test for Vercel CORS domain support
+[HEAD]   feat: configure CORS for Vercel, dynamic API URL, and deployment configs for Render & Vercel
 ```
 
 ---
