@@ -97,3 +97,13 @@ def test_jwt_secret_is_configurable_via_env(monkeypatch):
 
     # Restore
     importlib.reload(auth)
+
+
+def test_cors_headers_present_on_api_response(client):
+    """RED: Backend must send CORS headers so browser can call it directly."""
+    response = client.options(
+        "/api/auth/login",
+        headers={"Origin": "http://localhost:5173", "Access-Control-Request-Method": "POST"},
+    )
+    assert response.status_code in (200, 204)
+    assert "access-control-allow-origin" in response.headers
