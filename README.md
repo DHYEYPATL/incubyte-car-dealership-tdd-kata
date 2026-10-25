@@ -21,9 +21,11 @@ A car dealership inventory management system built using strict Test-Driven Deve
 |-------|-----------|
 | Backend | FastAPI + SQLAlchemy + SQLite |
 | Auth | JWT via python-jose, bcrypt for password hashing |
-| Frontend | React + Vite |
+| Frontend | React + Vite + custom CSS (Tailwind not used for tighter design control via DESIGN.md) |
 | Backend tests | pytest + httpx TestClient |
 | Frontend tests | Vitest + Testing Library |
+
+> **Note on Styling / Tailwind:** While the job description suggests Tailwind, this project uses custom CSS tokens and strict utility classes defined in [`DESIGN.md`](./DESIGN.md) (Archivo typography, showroom steel/amber palette, dense ledger tables, and custom stock gauge bars) to achieve precise visual hierarchy, high contrast, and zero layout shift without framework abstractions.
 
 ---
 
@@ -72,7 +74,7 @@ Open http://localhost:5173 — register an account, then log in.
 backend\venv\Scripts\python.exe -m pytest backend/tests/ -v
 ```
 
-Expected: **28 passed**
+Expected: **30 passed**
 
 ### Frontend tests (from frontend/)
 
@@ -81,26 +83,27 @@ cd frontend
 npm test
 ```
 
-Expected: **34 passed**
+Expected: **35 passed**
 
 ---
 
 ## Test Report
 
-### Backend — 28 tests
+### Backend — 30 tests
 
 ```
-test_auth.py (5) — register success, duplicate fails, login success, wrong password, nonexistent user
+test_auth.py (7) — register success, duplicate fails, login success, wrong password,
+                   nonexistent user, configurable JWT secret via env, CORS headers
 test_vehicles.py (23) — list, add (admin only), purchase (quantity/stock/404), search (make/model/
                          category/price range), dedicated /search endpoint, update (admin only),
                          delete (admin only), restock (admin only)
 ```
 
-### Frontend — 34 tests
+### Frontend — 35 tests
 
 ```
-api.test.js (8)         — login, register, getVehicles (auth header, search param,
-                          category+price params), purchase, createVehicle, 401 clears token
+api.test.js (9)         — login, register, getVehicles (auth header, search param,
+                          category+price params), purchase, createVehicle, updateVehicle, 401 clears token
 auth.test.js (2)        — decodeToken: valid JWT payload, null for invalid/empty token
 StockGauge.test.jsx (6) — quantity number, in-stock/low/out CSS classes,
                           fill width proportional to max, capped at 100%
@@ -201,6 +204,14 @@ Every line of AI-generated code was reviewed. I can explain and modify any of it
 
 ## Screenshots
 
-> **Note:** To add screenshots, run both servers (`uvicorn` and `npm run dev`), open http://localhost:5173, and take screenshots at 1440px and 390px wide.
->
-> Pending: login page, inventory table (user view), inventory table (admin view), out-of-stock state.
+### Login / Register
+![Login](./screenshots/login.png)
+
+### Inventory – User View
+![User Inventory](./screenshots/inventory-user.png)
+
+### Inventory – Admin View
+![Admin Inventory](./screenshots/inventory-admin.png)
+
+### Out of Stock (Buy disabled)
+![Out of Stock](./screenshots/out-of-stock.png)
