@@ -37,3 +37,9 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Showcase & Auth Storage
+auth.json
+showcase-output/
+project-showcase*/
+
