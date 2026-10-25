@@ -15,7 +15,6 @@ A car dealership inventory management system built using strict Test-Driven Deve
 - **Interactive API Docs (Swagger UI)**: [https://incubyte-car-dealership-tdd-kata.onrender.com/docs](https://incubyte-car-dealership-tdd-kata.onrender.com/docs)
 - **API Health Check**: [https://incubyte-car-dealership-tdd-kata.onrender.com/health](https://incubyte-car-dealership-tdd-kata.onrender.com/health)
 - **GitHub Repository**: [https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata)
-- **GitHub Pages Preview**: [https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
 
 ### Default Demo Credentials (Auto-seeded)
 - **Admin**: Username: `admin` | Password: `admin123` *(Full inventory management: add, edit, delete, restock)*
@@ -45,7 +44,7 @@ A car dealership inventory management system built using strict Test-Driven Deve
 | Frontend | React + Vite + Tailwind CSS |
 | Backend tests | pytest + httpx TestClient |
 | Frontend tests | Vitest + Testing Library |
-| CI / CD | GitHub Actions (automated test runner + GitHub Pages deployment) |
+| CI / CD | GitHub Actions (automated test runner for pytest & Vitest + keep-alive cron) |
 
 > **Styling & Design System:** Built with Tailwind CSS configured with custom automotive dealership tokens (Archivo typography, showroom steel/frost surfaces, asphalt text, turn-signal amber accents, and responsive stock-gauge status bars) adhering to strict visual rules in [`DESIGN.md`](./DESIGN.md).
 

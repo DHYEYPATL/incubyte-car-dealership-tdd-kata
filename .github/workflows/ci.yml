@@ -1,4 +1,4 @@
-name: CI / CD Pipeline
+name: CI Pipeline (Tests & Build)
 
 on:
   push:
@@ -6,15 +6,6 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
 
 jobs:
   backend-tests:
@@ -39,7 +30,7 @@ jobs:
           pytest backend/tests/ -v
 
   frontend-tests:
-    name: Frontend Test Suite (Vitest)
+    name: Frontend Test Suite (Vitest & Build)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -62,22 +53,3 @@ jobs:
       - name: Build production bundle
         working-directory: frontend
         run: npm run build
-
-      - name: Upload GitHub Pages artifact
-        if: github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: frontend/dist
-
-  deploy-pages:
-    name: Deploy to GitHub Pages (Live Demo)
-    if: github.ref == 'refs/heads/main'
-    needs: [backend-tests, frontend-tests]
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
