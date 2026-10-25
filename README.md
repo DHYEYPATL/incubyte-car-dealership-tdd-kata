@@ -24,17 +24,6 @@ A car dealership inventory management system built using strict Test-Driven Deve
 
 ---
 
-## What It Does
-
-- Register and log in as an **admin** (manage inventory) or **user** (browse and purchase)
-- View all vehicles in a stock-sheet table with a **stock gauge bar** (green/amber/empty)
-- Search vehicles by make, model, category, or price range
-- Search via `GET /api/vehicles` (with params) or the dedicated `GET /api/vehicles/search`
-- Purchase a vehicle — quantity decreases by 1; button disabled when out of stock
-- Admin: add, edit, delete, and restock vehicles
-
----
-
 ## Stack
 
 | Layer | Technology |
@@ -46,9 +35,8 @@ A car dealership inventory management system built using strict Test-Driven Deve
 | Frontend tests | Vitest + Testing Library |
 | CI / CD | GitHub Actions (automated test runner for pytest & Vitest + keep-alive cron) |
 
-> **Styling & Design System:** Built with Tailwind CSS configured with custom automotive dealership tokens (Archivo typography, showroom steel/frost surfaces, asphalt text, turn-signal amber accents, and responsive stock-gauge status bars) adhering to strict visual rules in [`DESIGN.md`](./DESIGN.md).
-
 ---
+
 
 ## Setup and Run
 
@@ -87,80 +75,13 @@ Open http://localhost:5173 — register an account, then log in.
 
 ---
 
-## Deployment Guide (Vercel + Render)
+## Test Report
 
-This application is architected for zero-friction cloud deployment following standard modern best practices:
-- **Frontend → Vercel** (Edge CDN, fast Vite build, client-side SPA routing)
-- **Backend → Render** (FastAPI Web Service, SQLite, automatic CORS regex & health checks)
-
-### 1. Deploy Backend to Render
-
-1. Log in to [Render Dashboard](https://dashboard.render.com/) and click **New +** → **Web Service** (or use **Blueprint** pointing to `render.yaml`).
-2. Connect your GitHub repository: `incubyte-car-dealership-tdd-kata`.
-3. Configure the service settings:
-   - **Name**: `incubyte-car-dealership-tdd-kata`
-   - **Root Directory**: `backend`
-   - **Runtime**: `Python 3`
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-4. Add Environment Variables:
-   - `SECRET_KEY`: `<generate-a-secure-random-key>` *(e.g. `openssl rand -hex 32`)*
-   - `AUTO_SEED`: `true` *(auto-populates demo cars and admin/user accounts on fresh disk)*
-   - `PYTHON_VERSION`: `3.11.9`
-5. Click **Deploy Web Service** and copy your backend URL (`https://incubyte-car-dealership-tdd-kata.onrender.com/`).
-   - Live health check endpoint: `/health` returns `{"status":"ok"}`.
-   - Live OpenAPI / Swagger docs: `/docs`.
-
-### 2. Deploy Frontend to Vercel
-
-1. Log in to [Vercel](https://vercel.com/) and click **Add New...** → **Project**.
-2. Import the same GitHub repository.
-3. Configure the project:
-   - **Framework Preset**: `Vite`
-   - **Root Directory**: click **Edit** and choose `frontend`
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Expand **Environment Variables** and add:
-   - `VITE_API_URL`: `https://incubyte-car-dealership-tdd-kata.onrender.com` *(your Render backend URL)*
-5. Click **Deploy**.
-
-   - `frontend/vercel.json` ensures full client-side SPA routing (`/login` refreshes smoothly without 404s).
-   - Backend CORS automatically authorizes all `https://*.vercel.app` domains out-of-the-box.
-
-### 3. Keeping Render Free-Tier Backend Awake (Zero Cold Starts)
-
-Render free web services spin down after 15 minutes of inactivity (causing a 50s delay on cold start). This project implements a 3-layer keep-awake strategy:
-1. **GitHub Actions Scheduled Ping**: [`.github/workflows/keep-alive.yml`](./.github/workflows/keep-alive.yml) runs every 10 minutes to ping `/health`, resetting the inactivity timer.
-2. **Frontend App Mount Pre-warm**: When a visitor lands on Vercel, the app immediately dispatches a background non-blocking `/health` request to pre-warm the container before the user submits credentials.
-3. **External Pinger (Optional 1-Click Setup)**: Create a free monitor on [cron-job.org](https://cron-job.org/) or [UptimeRobot](https://uptimerobot.com/) targeting `https://incubyte-car-dealership-tdd-kata.onrender.com/health` every 5–10 minutes for 24/7 zero-delay uptime.
-
----
-
-
-## Run Tests
-
-### Backend tests (from repo root)
+### Backend — 31 tests passed
 
 ```bash
 backend\venv\Scripts\python.exe -m pytest backend/tests/ -v
 ```
-
-Expected: **31 passed**
-
-### Frontend tests (from frontend/)
-
-```bash
-cd frontend
-npm test
-```
-
-Expected: **35 passed**
-
----
-
-## Test Report
-
-### Backend — 31 tests
 
 ```
 test_auth.py (8) — register success, duplicate fails, login success, wrong password,
@@ -171,8 +92,11 @@ test_vehicles.py (23) — list, add (admin only), purchase (quantity/stock/404),
                          delete (admin only), restock (admin only)
 ```
 
+### Frontend — 35 tests passed
 
-### Frontend — 35 tests
+```bash
+cd frontend && npm test
+```
 
 ```
 api.test.js (9)         — login, register, getVehicles (auth header, search param,
