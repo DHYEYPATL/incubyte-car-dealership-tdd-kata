@@ -57,10 +57,13 @@ export default function Inventory() {
     const res = await api.purchaseVehicle(id)
     if (res.ok) {
       setVehicles((prev) => prev.map((v) => (v.id === id ? res.data : v)))
+      setError('')
     } else if (res.status === 400) {
       setError('Vehicle out of stock')
     } else if (res.status === 401) {
       navigate('/login')
+    } else {
+      setError('Purchase failed. Is the backend running?')
     }
   }
 
@@ -69,6 +72,8 @@ export default function Inventory() {
     if (res.ok) {
       setVehicles((prev) => prev.filter((v) => v.id !== id))
       setModal(null)
+    } else {
+      setError(res.data?.detail || 'Delete failed')
     }
   }
 
@@ -97,6 +102,8 @@ export default function Inventory() {
     if (res.ok) {
       setVehicles((prev) => prev.map((v) => (v.id === id ? res.data : v)))
       setModal(null)
+    } else {
+      setError(res.data?.detail || 'Restock failed')
     }
   }
 
