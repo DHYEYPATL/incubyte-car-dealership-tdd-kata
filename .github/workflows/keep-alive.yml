@@ -1,0 +1,23 @@
+name: Render Backend Keep-Alive
+
+on:
+  schedule:
+    # Run every 10 minutes (Render spins down after 15 minutes of inactivity)
+    - cron: "*/10 * * * *"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  ping-render:
+    name: Ping Render Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend /health endpoint
+        run: |
+          echo "Sending keep-alive ping to Render backend..."
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 https://incubyte-car-dealership-tdd-kata.onrender.com/health)
+          echo "Render response status: $STATUS"
+          if [ "$STATUS" -eq 200 ]; then
+            echo "Render backend is warm and healthy (HTTP 200)."
+          else
+            echo "Render returned HTTP $STATUS (container may be booting from cold start)."
+          fi

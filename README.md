@@ -128,7 +128,15 @@ This application is architected for zero-friction cloud deployment following sta
    - `frontend/vercel.json` ensures full client-side SPA routing (`/login` refreshes smoothly without 404s).
    - Backend CORS automatically authorizes all `https://*.vercel.app` domains out-of-the-box.
 
+### 3. Keeping Render Free-Tier Backend Awake (Zero Cold Starts)
+
+Render free web services spin down after 15 minutes of inactivity (causing a 50s delay on cold start). This project implements a 3-layer keep-awake strategy:
+1. **GitHub Actions Scheduled Ping**: [`.github/workflows/keep-alive.yml`](./.github/workflows/keep-alive.yml) runs every 10 minutes to ping `/health`, resetting the inactivity timer.
+2. **Frontend App Mount Pre-warm**: When a visitor lands on Vercel, the app immediately dispatches a background non-blocking `/health` request to pre-warm the container before the user submits credentials.
+3. **External Pinger (Optional 1-Click Setup)**: Create a free monitor on [cron-job.org](https://cron-job.org/) or [UptimeRobot](https://uptimerobot.com/) targeting `https://incubyte-car-dealership-tdd-kata.onrender.com/health` every 5–10 minutes for 24/7 zero-delay uptime.
+
 ---
+
 
 ## Run Tests
 

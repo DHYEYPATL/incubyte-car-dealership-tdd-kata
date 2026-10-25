@@ -93,7 +93,9 @@ export const api = {
       body: JSON.stringify({ quantity }),
     }),
 
+  warmup: () => request('/health'),
   setToken,
   getToken,
   clearToken,
 }
+

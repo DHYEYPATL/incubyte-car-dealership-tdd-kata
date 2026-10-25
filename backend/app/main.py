@@ -48,8 +48,10 @@ def root():
 
 
 @app.get("/health", tags=["health"])
+@app.get("/api/health", tags=["health"])
 def health_check():
     return {"status": "ok"}
+
 
 
 # Register routers
