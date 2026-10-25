@@ -63,7 +63,7 @@ export default function Inventory() {
     } else if (res.status === 401) {
       navigate('/login')
     } else {
-      setError('Purchase failed. Is the backend running?')
+      setError(res.data?.detail || 'Purchase failed')
     }
   }
 
@@ -72,6 +72,7 @@ export default function Inventory() {
     if (res.ok) {
       setVehicles((prev) => prev.filter((v) => v.id !== id))
       setModal(null)
+      setError('')
     } else {
       setError(res.data?.detail || 'Delete failed')
     }
@@ -83,6 +84,7 @@ export default function Inventory() {
       if (res.ok) {
         setVehicles((prev) => [...prev, res.data])
         setModal(null)
+        setError('')
       } else {
         setError(res.data?.detail || 'Could not add vehicle')
       }
@@ -91,6 +93,7 @@ export default function Inventory() {
       if (res.ok) {
         setVehicles((prev) => prev.map((v) => (v.id === modal.vehicle.id ? res.data : v)))
         setModal(null)
+        setError('')
       } else {
         setError(res.data?.detail || 'Could not update vehicle')
       }
@@ -102,6 +105,7 @@ export default function Inventory() {
     if (res.ok) {
       setVehicles((prev) => prev.map((v) => (v.id === id ? res.data : v)))
       setModal(null)
+      setError('')
     } else {
       setError(res.data?.detail || 'Restock failed')
     }
