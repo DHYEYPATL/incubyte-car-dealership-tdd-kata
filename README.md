@@ -3,22 +3,25 @@
 A car dealership inventory management system built using strict Test-Driven Development (Red → Green → Refactor) for the Incubyte assessment.
 
 [![CI / CD Pipeline](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata/actions/workflows/ci.yml/badge.svg)](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata/actions/workflows/ci.yml)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen)](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
+[![Live Demo (Vercel)](https://img.shields.io/badge/Live%20Demo-Vercel-black?logo=vercel)](https://incubyte-car-dealership-tdd-kata.vercel.app/login)
+[![Backend API (Render)](https://img.shields.io/badge/API-Render-46E3B7?logo=render)](https://incubyte-car-dealership-tdd-kata.onrender.com/)
 
 ---
 
 ## Live Demo & Repository Links
 
-- **Frontend (Vercel)**: `https://incubyte-car-dealership.vercel.app` *(set to your Vercel deployment URL)*
-- **Backend API (Render)**: `https://incubyte-car-dealership-api.onrender.com` *(or your Render URL)*
-- **Interactive API Docs (Swagger)**: `https://incubyte-car-dealership-api.onrender.com/docs`
-- **GitHub Pages Preview**: [https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
+- **Live Application (Vercel)**: [https://incubyte-car-dealership-tdd-kata.vercel.app/login](https://incubyte-car-dealership-tdd-kata.vercel.app/login)
+- **Backend API (Render)**: [https://incubyte-car-dealership-tdd-kata.onrender.com/](https://incubyte-car-dealership-tdd-kata.onrender.com/)
+- **Interactive API Docs (Swagger UI)**: [https://incubyte-car-dealership-tdd-kata.onrender.com/docs](https://incubyte-car-dealership-tdd-kata.onrender.com/docs)
+- **API Health Check**: [https://incubyte-car-dealership-tdd-kata.onrender.com/health](https://incubyte-car-dealership-tdd-kata.onrender.com/health)
 - **GitHub Repository**: [https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata)
+- **GitHub Pages Preview**: [https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
 
 ### Default Demo Credentials (Auto-seeded)
-- **Admin**: Username: `admin` | Password: `admin123` *(Full inventory management)*
-- **User**: Username: `user` | Password: `user123` *(Browse & purchase vehicles)*
-- Or register a brand new account with any role on the login page!
+- **Admin**: Username: `admin` | Password: `admin123` *(Full inventory management: add, edit, delete, restock)*
+- **User**: Username: `user` | Password: `user123` *(Browse stock & purchase vehicles)*
+- Or register a brand new account directly on the login page!
+
 
 ---
 
@@ -96,7 +99,7 @@ This application is architected for zero-friction cloud deployment following sta
 1. Log in to [Render Dashboard](https://dashboard.render.com/) and click **New +** → **Web Service** (or use **Blueprint** pointing to `render.yaml`).
 2. Connect your GitHub repository: `incubyte-car-dealership-tdd-kata`.
 3. Configure the service settings:
-   - **Name**: `incubyte-car-dealership-api`
+   - **Name**: `incubyte-car-dealership-tdd-kata`
    - **Root Directory**: `backend`
    - **Runtime**: `Python 3`
    - **Build Command**: `pip install -r requirements.txt`
@@ -105,7 +108,7 @@ This application is architected for zero-friction cloud deployment following sta
    - `SECRET_KEY`: `<generate-a-secure-random-key>` *(e.g. `openssl rand -hex 32`)*
    - `AUTO_SEED`: `true` *(auto-populates demo cars and admin/user accounts on fresh disk)*
    - `PYTHON_VERSION`: `3.11.9`
-5. Click **Deploy Web Service** and copy your backend URL (e.g., `https://incubyte-car-dealership-api.onrender.com`).
+5. Click **Deploy Web Service** and copy your backend URL (`https://incubyte-car-dealership-tdd-kata.onrender.com/`).
    - Live health check endpoint: `/health` returns `{"status":"ok"}`.
    - Live OpenAPI / Swagger docs: `/docs`.
 
@@ -119,8 +122,9 @@ This application is architected for zero-friction cloud deployment following sta
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
 4. Expand **Environment Variables** and add:
-   - `VITE_API_URL`: `https://incubyte-car-dealership-api.onrender.com` *(your Render backend URL)*
+   - `VITE_API_URL`: `https://incubyte-car-dealership-tdd-kata.onrender.com` *(your Render backend URL)*
 5. Click **Deploy**.
+
    - `frontend/vercel.json` ensures full client-side SPA routing (`/login` refreshes smoothly without 404s).
    - Backend CORS automatically authorizes all `https://*.vercel.app` domains out-of-the-box.
 

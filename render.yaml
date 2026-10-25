@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: incubyte-car-dealership-api
+    name: incubyte-car-dealership-tdd-kata
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
@@ -14,4 +14,5 @@ services:
       - key: AUTO_SEED
         value: "true"
       - key: ALLOWED_ORIGINS
-        value: "http://localhost:5173"
+        value: "http://localhost:5173,https://incubyte-car-dealership-tdd-kata.vercel.app"
+
