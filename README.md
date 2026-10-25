@@ -2,6 +2,16 @@
 
 A car dealership inventory management system built using strict Test-Driven Development (Red → Green → Refactor) for the Incubyte assessment.
 
+[![CI / CD Pipeline](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata/actions/workflows/ci.yml/badge.svg)](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen)](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
+
+---
+
+## Live Demo & Repository Links
+
+- **Live Frontend Demo**: [https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/](https://DHYEYPATL.github.io/incubyte-car-dealership-tdd-kata/)
+- **GitHub Repository**: [https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata](https://github.com/DHYEYPATL/incubyte-car-dealership-tdd-kata)
+
 ---
 
 ## What It Does
@@ -21,11 +31,12 @@ A car dealership inventory management system built using strict Test-Driven Deve
 |-------|-----------|
 | Backend | FastAPI + SQLAlchemy + SQLite |
 | Auth | JWT via python-jose, bcrypt for password hashing |
-| Frontend | React + Vite + custom CSS (Tailwind not used for tighter design control via DESIGN.md) |
+| Frontend | React + Vite + Tailwind CSS |
 | Backend tests | pytest + httpx TestClient |
 | Frontend tests | Vitest + Testing Library |
+| CI / CD | GitHub Actions (automated test runner + GitHub Pages deployment) |
 
-> **Note on Styling / Tailwind:** While the job description suggests Tailwind, this project uses custom CSS tokens and strict utility classes defined in [`DESIGN.md`](./DESIGN.md) (Archivo typography, showroom steel/amber palette, dense ledger tables, and custom stock gauge bars) to achieve precise visual hierarchy, high contrast, and zero layout shift without framework abstractions.
+> **Styling & Design System:** Built with Tailwind CSS configured with custom automotive dealership tokens (Archivo typography, showroom steel/frost surfaces, asphalt text, turn-signal amber accents, and responsive stock-gauge status bars) adhering to strict visual rules in [`DESIGN.md`](./DESIGN.md).
 
 ---
 

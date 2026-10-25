@@ -198,6 +198,18 @@ Each vehicle feature was implemented through strict isolated iterations:
 
 ---
 
+### Phase 16 — Tailwind CSS Integration & CI/CD Pipeline
+**Prompt:**
+> Implement all remaining optional and stack requirements to achieve a 100% comprehensive submission:  
+> 1. Integrate Tailwind CSS into the frontend with custom theme tokens mapped to DESIGN.md colors and typography.  
+> 2. Ensure all 35 frontend tests continue to pass and production build succeeds.  
+> 3. Add GitHub Actions CI/CD workflow (.github/workflows/ci.yml) to automatically run pytest and Vitest on every push and deploy live demo to GitHub Pages.
+
+- **What AI did:** Configured `tailwind.config.js` and `postcss.config.js`, added `@tailwind` directives in `index.css`, created `.github/workflows/ci.yml`, and added `base` config in `vite.config.js`.
+- **Human Verification:** Verified `npm test` (35 passed) and `npm run build` (clean bundle). Tested clean clone from GitHub to verify setup instructions.
+
+---
+
 ## 3. Human Oversight & Reflection Summary
 
 - **Total Backend Tests:** 30 passing
