@@ -233,13 +233,24 @@ Each vehicle feature was implemented through strict isolated iterations:
 - **What AI did:** Created `.github/workflows/keep-alive.yml` with a 10-minute cron pinging `/health`, added a non-blocking mount pre-warm in `frontend/src/App.jsx` via `api.warmup()`, created a vector SVG favicon in `frontend/public/favicon.svg` matching the automotive design tokens, linked it in `frontend/index.html`, and documented the 3-layer keep-alive strategy in `README.md`.
 - **Human Verification:** Verified browser tab renders crisp vector favicon with dark theme color, tested `/api/health` endpoint locally, verified `npm test` (35 passed) and `npm run build`. Configured external cron-job.org pinger to provide 24/7 redundancy against Render free-tier spin-down.
 
----
+### Phase 19 — Visual Showcase Pipeline & Presentation Deliverables
+**Prompt:**
+> Use project-showcase to generate presentation-grade visuals and demo videos of the running full-stack application:
+> 1. Install Playwright Chromium and FFmpeg in `.kiro/skills/project-showcase/scripts`.
+> 2. Authenticate against the live deployed app via `admin` credentials, storing JWT in Playwright `auth.json`.
+> 3. Generate framed device hero mockups (`hero-home.png`, `desktop-home.png`, `phone-home.png`) with ambient brand glow extracted from the theme.
+> 4. Record landscape (1920x1080) and portrait (1080x1920) automated cursor tours with title and CTA end cards.
 
+- **What AI did:** Set up `project-showcase`, executed Playwright and ffmpeg to generate raw screenshots, device-framed mockups, contact sheets, and 20s demo videos for landscape and portrait. Added `showcase-output/` and temporary auth state to `.gitignore`.
+- **Human Verification:** Verified that no tokens, passwords, or personal data were captured in video frames or images; validated the contact sheets (`sheet-landscape.png` and `sheet-portrait.png`). Committed `.gitignore` changes and pushed to main.
+
+---
 
 ## 3. Human Oversight & Reflection Summary
 
 - **Total Backend Tests:** 31 passing
 - **Total Frontend Tests:** 35 passing
+- **Total Combined Tests:** 66 passing (100% pass rate)
 - **Primary AI Pairing Tool:** Kiro IDE / Antigravity
 - **Reviewer:** 100% human oversight on every commit
 - **Key Interventions:**
@@ -248,3 +259,4 @@ Each vehicle feature was implemented through strict isolated iterations:
   3. Enforced TDD integrity when AI attempted to write frontend production code ahead of tests.
   4. Configured CORS domain regex so dynamic Vercel preview/production deployments connect seamlessly.
   5. Ensured all commits adhere to the Red → Green → Refactor narrative with proper co-author trailers.
+

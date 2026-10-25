@@ -86,6 +86,11 @@ Open http://localhost:5173 — register an account, then log in.
 
 ## Run Tests
 
+### Test Suite Results
+- **Backend (pytest)**: 31 passed
+- **Frontend (Vitest)**: 35 passed
+- **Total**: 66 passed (100% pass rate)
+
 ### Backend tests (from repo root)
 
 ```bash
@@ -125,18 +130,21 @@ Result: **35 passed**
 
 **Tools used:** Kiro IDE (Claude) and Antigravity — used as a junior pair programmer.
 
-**Workflow:**
-1. I wrote the next small TDD step as a prompt
-2. AI suggested the test or production code
-3. I reviewed every line, ran the tests myself, and only then committed
+**How I used them:**
+1. I formulated the next small TDD step as a prompt.
+2. The AI generated initial boilerplate for tests and minimal production implementations.
+3. I reviewed and verified every line, ran the test suite locally, and only committed after passing.
 
 **Key corrections I made:**
 - Switched from passlib to direct bcrypt (compatibility issue)
 - Fixed 32-bit Python / greenlet build failure by moving to Python 3.13 64-bit
 - Caught a process violation (AI wrote frontend production code before failing tests) and corrected it with `git reset`
 
-Every line of AI-generated code was reviewed. I can explain and modify any of it.  
+**Reflection on how AI impacted my workflow:**
+AI drastically reduced boilerplate overhead and accelerated exploring edge cases in test suites (e.g., boundary conditions on zero-stock purchases and filter permutations). However, it required constant critical vigilance—specifically enforcing strict TDD discipline when AI attempted to jump ahead to implementation without failing tests first. Treating AI as an eager junior pair programmer rather than an autopilot was the key to maintaining 100% code ownership. Every line of AI-generated code was reviewed, understood, and is fully maintainable.
+
 Full interaction log is in `PROMPTS.md`.
+
 
 ---
 
