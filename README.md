@@ -245,6 +245,7 @@ d3286f4 refactor: consistent error clearing on success, cleaner error messages
 f7377bd feat: configure CORS for Vercel, dynamic API URL, and deployment configs for Render & Vercel
 292da90 docs: update production deployment URLs for Vercel and Render
 027bd92 feat: add Render keep-alive cron workflow and handcrafted SVG favicon
+c40e3a3 docs: remove GitHub Pages preview link and streamline CI workflow
 ```
 
 ---
@@ -253,6 +254,10 @@ f7377bd feat: configure CORS for Vercel, dynamic API URL, and deployment configs
 
 ### Tools used
 - **Kiro IDE** (powered by Claude) & **Antigravity** (Google DeepMind) — used throughout the project as a pair programmer
+
+> [!NOTE]
+> **Contributor Attribution Notice**: In the first 9 commits (`f2d1f35` through `88071fa`), the commit messages followed the literal example snippet provided in `INCUBYTE_TDD_RULES.md` (`Co-authored-by: Kiro <AI@users.noreply.github.com>`). GitHub automatically maps the handle `<AI@users.noreply.github.com>` to the GitHub account `shimonenator` (Shimon Schwartz). Per strict Incubyte rules (*"Never rewrite history, never force-push"*), the Git history was kept intact. All commits and production code were authored by DHYEYPATL.
+
 
 
 ### How I used AI
