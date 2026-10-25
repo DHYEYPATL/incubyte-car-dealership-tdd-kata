@@ -227,10 +227,14 @@ Each vehicle feature was implemented through strict isolated iterations:
 **Prompt:**
 > Implement Render free-tier cold-start mitigation (keep-alive trigger every 10 min so backend doesn't sleep) and add a clean, non-AI-slop automotive vector SVG favicon to the frontend browser tab.
 
+- Commits:
+  - `027bd92 feat: add Render keep-alive cron workflow and handcrafted SVG favicon`
+  - `292da90 docs: update production deployment URLs for Vercel and Render`
 - **What AI did:** Created `.github/workflows/keep-alive.yml` with a 10-minute cron pinging `/health`, added a non-blocking mount pre-warm in `frontend/src/App.jsx` via `api.warmup()`, created a vector SVG favicon in `frontend/public/favicon.svg` matching the automotive design tokens, linked it in `frontend/index.html`, and documented the 3-layer keep-alive strategy in `README.md`.
-- **Human Verification:** Verified browser tab renders crisp vector favicon with dark theme color, tested `/api/health` endpoint locally, verified `npm test` (35 passed) and `npm run build`.
+- **Human Verification:** Verified browser tab renders crisp vector favicon with dark theme color, tested `/api/health` endpoint locally, verified `npm test` (35 passed) and `npm run build`. Configured external cron-job.org pinger to provide 24/7 redundancy against Render free-tier spin-down.
 
 ---
+
 
 ## 3. Human Oversight & Reflection Summary
 

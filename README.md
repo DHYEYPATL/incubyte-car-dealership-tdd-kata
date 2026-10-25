@@ -243,7 +243,9 @@ d3286f4 refactor: consistent error clearing on success, cleaner error messages
 03b55da docs: add screenshots, structured TDD rules, and audit fixes
 3918474 feat: integrate Tailwind CSS, add GitHub Actions CI/CD, and live deployment
 336b1ed test: add failing test for Vercel CORS domain support
-[HEAD]   feat: configure CORS for Vercel, dynamic API URL, and deployment configs for Render & Vercel
+f7377bd feat: configure CORS for Vercel, dynamic API URL, and deployment configs for Render & Vercel
+292da90 docs: update production deployment URLs for Vercel and Render
+027bd92 feat: add Render keep-alive cron workflow and handcrafted SVG favicon
 ```
 
 ---
@@ -251,7 +253,8 @@ d3286f4 refactor: consistent error clearing on success, cleaner error messages
 ## My AI Usage
 
 ### Tools used
-- **Kiro IDE** (powered by Claude) — used throughout the entire project as a pair programmer
+- **Kiro IDE** (powered by Claude) & **Antigravity** (Google DeepMind) — used throughout the project as a pair programmer
+
 
 ### How I used AI
 
